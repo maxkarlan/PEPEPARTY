@@ -46,11 +46,11 @@ video.addEventListener("loadedmetadata", () => {
 });
 
 // Calculate the font size and characters per row for the ASCII art
-const fontSize = 5;
-const charsPerRow = 300;
+const fontSize = 3;
+const charsPerRow = 500;
 
 // Convert each video frame to ASCII and display it on the page
-function convertToAscii(color, boldness) {
+function convertToAscii() {
   // Draw the current video frame on the canvas
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
@@ -88,8 +88,6 @@ function convertToAscii(color, boldness) {
 
   // Set the font size and display the ASCII art on the page
   document.getElementById("ascii-art").style.fontSize = fontSize + "px";
-  document.getElementById("ascii-art").style.color = color;
-  document.getElementById("ascii-art").style.textShadow = `0 0 ${boldness}px ${color}`;
   document.getElementById("ascii-art").textContent = asciiArt;
 
   // Call this function again to create a new frame of ASCII art
