@@ -24,13 +24,47 @@
   color: #4169E1; /* set a solid blue color as a fallback */
   background-color: white; /* set a white background as a fallback */
 }
+          #ascii-container {
+  border: 100px solid white;
+  box-sizing: border-box;
+  padding: 100px;
+}
+          #white-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height:100px;
+  background-color: white;
+}
+      #camera-button {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4169E1;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        outline: none;
+      }
+      #camera-button:hover {
+        background-color: #87CEFA;
+      }
 
     </style>
   </head>
   <body>
+    <div id="ascii-container">
+  <pre id="ascii-art"></pre>
+</div>
     <video id="video" autoplay></video>
     <pre id="ascii-art"></pre>
-
+<canvas id="white-bar"></canvas>
+ <button id="camera-button">Toggle Camera</button>
     <script>
 // Get the video element from the DOM
 const video = document.createElement("video");
@@ -45,7 +79,23 @@ video.addEventListener("loadedmetadata", () => {
   canvas.width = video.videoWidth * 3;
   canvas.height = video.videoHeight * (3/2);
 });
+      
+const whiteBarCanvas = document.getElementById("white-bar");
+const whiteBarCtx = whiteBarCanvas.getContext("2d");
 
+function drawWhiteBar() {
+  whiteBarCtx.fillStyle = "white";
+  whiteBarCtx.fillRect(0, 0, whiteBarCanvas.width, whiteBarCanvas.height);
+}
+
+video.addEventListener("loadedmetadata", () => {
+  // Set the width and height of the canvas and white bar elements to match the video dimensions
+  canvas.width = video.videoWidth * 3;
+  canvas.height = video.videoHeight * (3/2);
+  whiteBarCanvas.width = canvas.width;
+  drawWhiteBar();
+});      
+      
 // Get the ASCII characters to use for the conversion
 const asciiChars = ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", "."];
 
@@ -55,6 +105,29 @@ video.addEventListener("loadedmetadata", () => {
   videoAspectRatio = video.videoWidth / video.videoHeight;
 });
 
+      // Add an event listener to the #camera-button element to start and stop the camera stream
+      const cameraButton = document.getElementById("camera-button");
+      let isCameraOn = false;
+      let videoStream = null;
+      cameraButton.addEventListener("click", () => {
+        if (isCameraOn) {
+          isCameraOn = false;
+          videoStream.getTracks()[0].stop();
+        } else {
+          isCameraOn = true;
+          navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+              videoStream = stream;
+              video.srcObject = stream;
+              video.play();
+              convertToAscii();
+            })
+            .catch((error) => {
+              console.error("Error accessing camera:", error);
+            });
+        }
+      });      
+      
 // Calculate the font size and characters per row for the ASCII art
 const fontSize = 3;
 const charsPerRow = 500;
