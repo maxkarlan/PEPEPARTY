@@ -8,13 +8,23 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
+        background-color: black; /* set the background color of the body to black */
       }
-      #ascii-art {
-        font-family: monospace;
-        white-space: pre;
-        text-align: center;
-        height: 100vh;
-      }
+#ascii-art {
+  font-family: monospace;
+  white-space: pre;
+  text-align: center;
+  height: 100vh;
+  background-color: black;
+  color: transparent;
+  background-image: linear-gradient(to bottom, #87CEFA, #4169E1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* fallback options for older browsers */
+  color: #4169E1; /* set a solid blue color as a fallback */
+  background-color: white; /* set a white background as a fallback */
+}
+
     </style>
   </head>
   <body>
